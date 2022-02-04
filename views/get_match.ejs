@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Match </title>
+</head>
+<body>
+    <h2> First innings </h2>
+    <h3> Batting (<%= teams[0].firstteam %>) </h3>
+    <table cellspacing="0" width="100%">
+        <tr>
+            <td> <b>Batter</b> </td>
+            <td> <b>Runs</b> </td>
+            <td> <b>Fours</b> </td>
+            <td> <b>Sixes</b> </td>
+            <td> <b>Balls faced</b> </td>
+        </tr>
+        <% batting.forEach(batter => { %>
+            <% if (batter.innings_no == 1) {%>
+                <tr>
+                    <td> <a href="/player/<%= batter.player_id%>"> <%= batter.player_name %> <br></a> </td>
+                    <td> <%= batter.runs %> </td>
+                    <td> <%= batter.fours %> </td>
+                    <td> <%= batter.sixes %> </td>
+                    <td> <%= batter.balls_faced %> </td>
+                </tr>
+            <% } %> 
+        <% }) %> 
+    </table>
+    <h4> Extras: <%= extras[0].extras %>  </h4>
+    <h4> Total: <%= total[0].total_runs %>/<%= total[0].wickets %>  </h4>
+
+    <h3> Bowling </h3>
+    <table cellspacing="0" width="100%">
+        <tr>
+            <td> <b>Bowler</b> </td>
+            <td> <b>Balls bowled</b> </td>
+            <td> <b>Runs_given</b> </td>
+            <td> <b>Wickets</b> </td>
+        </tr>
+        <% bowling.forEach(bowler => { %>
+            <% if (bowler.innings_no == 1) {%>
+                <tr>
+                    <td> <a href="/player/<%= bowler.player_id%>"> <%= bowler.player_name %> <br></a> </td>
+                    <td> <%= bowler.balls_bowled %> </td>
+                    <td> <%= bowler.runs_given %> </td>
+                    <td> <%= bowler.wickets %> </td>
+                </tr>
+            <% } %> 
+        <% }) %> 
+    </table>
+
+    <h2> Second innings </h2>
+    <h3> Batting (<%= teams[0].secondteam %>) </h3>
+    <table cellspacing="0" width="100%">
+        <tr>
+            <td> <b>Batter</b> </td>
+            <td> <b>Runs</b> </td>
+            <td> <b>Fours</b> </td>
+            <td> <b>Sixes</b> </td>
+            <td> <b>Balls faced</b> </td>
+        </tr>
+        <% batting.forEach(batter => { %>
+            <% if (batter.innings_no == 2) {%>
+                <tr>
+                    <td> <a href="/player/<%= batter.player_id%>"> <%= batter.player_name %> <br></a> </td>
+                    <td> <%= batter.runs %> </td>
+                    <td> <%= batter.fours %> </td>
+                    <td> <%= batter.sixes %> </td>
+                    <td> <%= batter.balls_faced %> </td>
+                </tr>
+            <% } %> 
+        <% }) %> 
+    </table>
+    <h4> Extras: <%= extras[1].extras %>  </h4>
+    <h4> Total: <%= total[1].total_runs %>/<%= total[1].wickets %>  </h4>
+
+    <h3> Bowling </h3>
+    <table cellspacing="0" width="100%">
+        <tr>
+            <td> <b>Bowler</b> </td>
+            <td> <b>Balls bowled</b> </td>
+            <td> <b>Runs_given</b> </td>
+            <td> <b>Wickets</b> </td>
+        </tr>
+        <% bowling.forEach(bowler => { %>
+            <% if (bowler.innings_no == 2) {%>
+                <tr>
+                    <td> <a href="/player/<%= bowler.player_id%>"> <%= bowler.player_name %> <br></a> </td>
+                    <td> <%= bowler.balls_bowled %> </td>
+                    <td> <%= bowler.runs_given %> </td>
+                    <td> <%= bowler.wickets %> </td>
+                </tr>
+            <% } %> 
+        <% }) %> 
+    </table>
+</body>
+</html>

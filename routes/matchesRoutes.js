@@ -20,13 +20,13 @@ router.get('/matches', async (req, res) => {
 
 router.get('/matches/:m_id', async (req, res) => {
     const {m_id} = req.params;
-    const q_bat = `select bb.innings_no, player.player_name, sum(runs_scored) as runs , sum(case when (runs_scored=4) then 1 else 0 end) as fours, sum(case when (runs_scored=6) then 1 else 0 end) as sixes, count(ball_id) as balls_faced
+    const q_bat = `select bb.innings_no, player.player_id, player.player_name, sum(runs_scored) as runs , sum(case when (runs_scored=4) then 1 else 0 end) as fours, sum(case when (runs_scored=6) then 1 else 0 end) as sixes, count(ball_id) as balls_faced
 	from ball_by_ball bb
 	join match on match.match_id = bb.match_id
 	join player on bb.striker = player.player_id
     where bb.match_id = $1
-	group by bb.match_id, bb.innings_no, player.player_name
-	order by bb.match_id, bb.innings_no, runs desc, player.player_name`;
+	group by bb.match_id, bb.innings_no, player.player_name, player.player_id
+	order by bb.match_id, bb.innings_no `;
 
     const q_extras = `select bb.innings_no, sum(extra_runs) as extras
     from ball_by_ball bb
@@ -49,6 +49,13 @@ router.get('/matches/:m_id', async (req, res) => {
     where bb.match_id = $1
 	group by bb.match_id, bb.innings_no, player.player_name
 	order by bb.match_id, bb.innings_no, wickets desc, player.player_name`;
+
+    const q_teams = `select tt1.team_name as firstTeam,tt2.team_name as secondTeam from
+    (select team1 as t1,team2 as t2 from match where match.match_id = $1 and ((toss_winner=team1 and toss_name='bat') or (toss_winner=team2 and toss_name='field'))
+    union
+    select team2 as t1,team1 as t2 from match where match.match_id = $1 and ((toss_winner=team2 and toss_name='bat') or (toss_winner=team1 and toss_name='field')))foo
+    join team tt1 on foo.t1=tt1.team_id
+    join team tt2 on foo.t2=tt2.team_id`;
     
     try {
         const batting = await client.query(q_bat, [m_id]);
@@ -59,7 +66,9 @@ router.get('/matches/:m_id', async (req, res) => {
         console.table(extras.rows);
         const total = await client.query(q_total, [m_id]);
         console.table(total.rows);
-        res.json({batting: batting.rows, extras: extras.rows, total: total.rows, bowling: bowling.rows});
+        const teams = await client.query(q_teams, [m_id]);
+        console.table(teams.rows)
+        res.render('get_match', {batting: batting.rows, extras: extras.rows, total: total.rows, bowling: bowling.rows, teams: teams.rows});
     }
     catch (e) { console.error(e.message); }
 });
