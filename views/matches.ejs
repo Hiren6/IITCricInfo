@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All matches</title>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: center;
+            padding: 8px;
+        }
+        #mid {
+            border: 1px solid #dddddd;
+            text-align: center;
+            padding: 8px;
+        }
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+        
+        #header {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    
+    <h1 id="header">List of all matches</h1>
+    <table id="mt" cellspacing="0" width="100%">
+        <tr>
+            <td id="mid"> Match ID </td>
+            <td> Season year </td>
+            <td> Match Details </td>
+        </tr>
+        <% matches.forEach(match => { %>
+            <tr>
+                <td> <%= match.match_id %> </td>
+                <td> <%= match.season_year %> </td>
+                <td>
+                    <a href="/matches/<%= match.match_id%>"><%= match.team1%> vs <%= match.team2%> <br></a>
+                    <%= match.venue_name%>, <%= match.city_name%> <br>
+                    <%= match.result %> won by <%= match.win_margin %> <%= match.win_type %>    
+                </td>    
+            </tr>
+        <% }) %> 
+    </table>
+</body>
+</html>
