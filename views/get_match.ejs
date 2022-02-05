@@ -96,5 +96,52 @@
             <% } %> 
         <% }) %> 
     </table>
+
+    <h2> Match Info </h2>
+    <p>
+        <b>Match</b> : <%= info[0].match_id %>, <%= info[0].team1 %> vs <%= info[0].team2 %>, <%= info[0].season_year %> <br>
+        <b>Toss</b> : <%= info[0].toss %> <br>
+        <b>Venue</b> : <%= info[0].venue_name %> <br>
+        <b>Umpires</b> : <%= umpires[0].umpire_name %>, <%= umpires[1].umpire_name %>, <%= umpires[2].umpire_name %> <br>
+        <% var c1 = 0, c2 = 0 %> 
+        <b>Playing XI of team1</b> :    <% playingXI.forEach(player => { %>
+                                            <% if (player.team_id == info[0].id1) {%>
+                                                <%= player.player_name %>
+                                                <% if (player.role_desc  == 'Keeper') {%>
+                                                    (wk)  
+                                                <% } %>
+                                                <% if(player.role_desc == 'Captain') {%>
+                                                    (c)  
+                                                <% } %>
+                                                <% if(player.role_desc == 'CaptainKeeper') {%>
+                                                    (c) (wk)  
+                                                <% } %>
+                                                <% c1 += 1%>
+                                                <% if(c1 < 11) {%>
+                                                        ,  
+                                                <% } %>
+                                            <% } %> 
+                                        <% }) %>
+        <br>
+        <b>Playing XI of team2</b> :    <% playingXI.forEach(player => { %>
+                                            <% if (player.team_id == info[0].id2) {%>
+                                                <%= player.player_name %>
+                                                <% if (player.role_desc  == 'Keeper') {%>
+                                                    (wk)  
+                                                   <% } %>
+                                                <% if(player.role_desc == 'Captain') {%>
+                                                    (c)  
+                                                <% } %>
+                                                <% if(player.role_desc == 'CaptainKeeper') {%>
+                                                    (c) (wk)  
+                                                <% } %>
+                                                <% c2 += 1%>
+                                                <% if(c2 < 11) {%>
+                                                        ,  
+                                                <% } %> 
+                                            <% } %> 
+                                        <% }) %>
+    </p>
+
 </body>
 </html>
