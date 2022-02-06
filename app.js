@@ -3,6 +3,8 @@ const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser')
 const matchesRoutes = require('./routes/matchesRoutes')
+const venuesRoutes = require('./routes/venuesRoutes')
+
 const port = 8080;
 
 app.set('view engine', 'ejs');
@@ -31,3 +33,6 @@ app.get('/', (req, res) => {
 
 // matches routes
 app.use(matchesRoutes)
+
+//venues routes
+app.use(venuesRoutes)
