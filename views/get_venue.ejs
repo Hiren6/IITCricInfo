@@ -4,10 +4,26 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/assets/css/navbar.css" type="text/css">
     <title> Venue </title>
 </head>
 <body>
-    
-
+    <%- include('./partials/navbar.ejs') %> 
+    <h2> Venue Information </h2>
+    <p>
+        Venue name: <%= info[0].venue_name %> <br>
+        Address : <%= info[0].city_name %>, <%= info[0].country_name %> <br>
+        Capacity : <%= info[0].capacity %> <br>
+        Total matches played : <%= runs[0].total_played %> <br>
+        Highest total recorded : <%= runs[0].highest_total %> <br> 
+        Lowest total recorded :  <%= runs[0].lowest_total %> <br>
+        Highest runs chased: 
+        <% if (highest_chased[0].highest_chased != null) {%> 
+            <%= highest_chased[0].highest_chased %> <br>
+        <% } %>
+        <% if (highest_chased[0].highest_chased == null) {%> 
+            Null <br>
+        <% } %> 
+    </p>
 </body>
 </html>

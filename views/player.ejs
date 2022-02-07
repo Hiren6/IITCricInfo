@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab-4 Homepage</title>
+    <link rel="stylesheet" href="/assets/css/home.css" type="text/css">
+</head>
+<body>
+    <h1>Player Info</h1>
+    player_name,country_name,batting_hand,bowling_skill
+    <h2><%= player_info.player_name %> </h2>
+    <h2><%= player_info.country_name %> </h2>
+    <h2><%= player_info.batting_hand %> </h2>
+    <h2><%= player_info.bowling_skill %> </h2>
+
+    <h1>BATTING</h1>
+    <h4>Total Matches:<%= tot_match %></h4>
+    <h4>Total Run:<%= tot_runs %></h4>
+    <h4>Highest run:<%= hs %></h4>
+    <h4>No of half centuries:<%= fifties %></h4>    
+    <h4>No of fours:<%= fours %></h4>
+    <h4>No of sixes:<%= sixes%></h4>
+
+    <% strike_rate = tot_runs/tot_balls*100 %>
+    <% Average = tot_runs/tot_wick %>
+    <h4>Strike Rate:<%= strike_rate %></h4>
+    <h4>Average:<%= Average %></h4>
+
+    <canvas id="Batting" style="width:100%;max-width:600px"></canvas>
+    <script>
+
+        var scores = [];
+        <% runs.forEach(run => { %>
+            scores.push(<%= run.sum %>)
+        <% }) %> 
+
+        var matches = [];
+        <% runs.forEach(run => { %>
+            matches.push(<%= run.match_id %>)
+        <% }) %> 
+
+        var barcolor = [];
+        <% runs.forEach(run => { %>
+            if (<%= run.sum %> < 20){barcolor.push("blue");}
+            else if (<%= run.sum %> < 30){barcolor.push("red");}
+            else if (<%= run.sum %> < 50){barcolor.push("green");}
+            else {barcolor.push("orange");}
+            
+        <% }) %> 
+
+        new Chart("Batting", {
+          type: "bar",
+          data: {
+            labels: matches,
+            datasets: [{
+              backgroundColor: barcolor,
+              data: scores
+            }]
+          },
+          options: {
+            legend: {display: false},
+            title: {
+              display: true,
+              text: "World Wine Production 2018"
+            }
+          }
+        },
+        );
+    </script>
+
+    <h1>BOWLING</h1>
+    <h4>Total Matches :<%= tot_match_bowl %></h4>
+    <h4>Total Balls Bowled :<%= tot_balls_bowl %></h4>
+    <h4>Total Overs Bowled :<%= tot_over %></h4>
+    <h4>Total Wickets Taken :<%= tot_wick_bowl %></h4>    
+    <h4>Total Runs Conceded :<%= tot_runs_bowl %></h4>    
+    <% economy = tot_runs_bowl / tot_over %>
+    <h4>Economy :<%= economy %></h4>
+    <h4>Total five wickets :<%= five_wick %></h4>
+
+    <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+    <script>
+
+        var matches = [];
+        <% bowls.forEach(bowl => { %>
+            matches.push(<%= bowl.match_id %>)
+        <% }) %> 
+
+        var runconceded = [];
+        <% bowls.forEach(bowl => { %>
+            runconceded.push(<%= bowl.run %>)
+        <% }) %> 
+
+        var wickettaken = [];
+        <% bowls.forEach(bowl => { %>
+            wickettaken.push(<%= bowl.wicket %>)
+        <% }) %> 
+
+        new Chart("myChart",{
+        type: 'bar',
+        data: {
+        labels: matches,
+        datasets: [{
+      label: "Dataset1",
+      type: "line",
+      backgroundColor: "#0000FF",
+      lineTension : 0,
+      borderColor: "#0000FF",
+      borderWidth: 1,
+      fill: false,
+      yAxisID: "axis-time",
+      data: wickettaken
+    },{
+      label: "Dataset2",
+      type: "bar",
+      backgroundColor: "#ff0000",
+      borderColor: "#ff0000",
+      borderWidth: 1,
+      fill: true,
+      yAxisID: "axis-bar",
+      data: runconceded
+    }],
+    },
+options: {
+    tooltips: {
+      displayColors: true,
+    },
+    scales: {
+      xAxes: [{
+        stacked: true,
+      }],
+      yAxes: [{
+        stacked: true,
+        id: 'axis-bar'
+      }, {
+        stacked: true,
+        id: 'axis-time',
+        display: false,
+      }]
+    },
+        responsive: true
+    }
+});
+          
+    </script>
+
+
+</body>
+</html>

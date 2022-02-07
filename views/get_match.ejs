@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/assets/css/navbar.css" type="text/css">
     <title>Match </title>
 </head>
 <body>
+    <%- include('./partials/navbar.ejs') %> 
     <h2> First innings </h2>
     <h3> Batting (<%= teams[0].firstteam %>) </h3>
     <table cellspacing="0" width="100%">
@@ -20,7 +22,7 @@
         <% batting.forEach(batter => { %>
             <% if (batter.innings_no == 1) {%>
                 <tr>
-                    <td> <a href="/player/<%= batter.player_id%>"> <%= batter.player_name %> <br></a> </td>
+                    <td> <a href="/players/<%= batter.player_id%>"> <%= batter.player_name %> <br></a> </td>
                     <td> <%= batter.runs %> </td>
                     <td> <%= batter.fours %> </td>
                     <td> <%= batter.sixes %> </td>
@@ -29,8 +31,9 @@
             <% } %> 
         <% }) %> 
     </table>
-    <h4> Extras: <%= extras[0].extras %>  </h4>
-    <h4> Total: <%= total[0].total_runs %>/<%= total[0].wickets %>  </h4>
+    <br>
+    <b> Extras: <%= extras[0].extras %> </b> <br>
+    <b> Total: <%= total[0].total_runs %>/<%= total[0].wickets %> </b> <br>
 
     <h3> Bowling </h3>
     <table cellspacing="0" width="100%">
@@ -43,7 +46,7 @@
         <% bowling.forEach(bowler => { %>
             <% if (bowler.innings_no == 1) {%>
                 <tr>
-                    <td> <a href="/player/<%= bowler.player_id%>"> <%= bowler.player_name %> <br></a> </td>
+                    <td> <a href="/players/<%= bowler.player_id%>"> <%= bowler.player_name %> <br></a> </td>
                     <td> <%= bowler.balls_bowled %> </td>
                     <td> <%= bowler.runs_given %> </td>
                     <td> <%= bowler.wickets %> </td>
@@ -65,7 +68,7 @@
         <% batting.forEach(batter => { %>
             <% if (batter.innings_no == 2) {%>
                 <tr>
-                    <td> <a href="/player/<%= batter.player_id%>"> <%= batter.player_name %> <br></a> </td>
+                    <td> <a href="/players/<%= batter.player_id%>"> <%= batter.player_name %> <br></a> </td>
                     <td> <%= batter.runs %> </td>
                     <td> <%= batter.fours %> </td>
                     <td> <%= batter.sixes %> </td>
@@ -74,8 +77,9 @@
             <% } %> 
         <% }) %> 
     </table>
-    <h4> Extras: <%= extras[1].extras %>  </h4>
-    <h4> Total: <%= total[1].total_runs %>/<%= total[1].wickets %>  </h4>
+    <br>
+    <b> Extras: <%= extras[1].extras %> </b> <br>
+    <b> Total: <%= total[1].total_runs %>/<%= total[0].wickets %> </b> <br>
 
     <h3> Bowling </h3>
     <table cellspacing="0" width="100%">
@@ -88,7 +92,7 @@
         <% bowling.forEach(bowler => { %>
             <% if (bowler.innings_no == 2) {%>
                 <tr>
-                    <td> <a href="/player/<%= bowler.player_id%>"> <%= bowler.player_name %> <br></a> </td>
+                    <td> <a href="/players/<%= bowler.player_id%>"> <%= bowler.player_name %> <br></a> </td>
                     <td> <%= bowler.balls_bowled %> </td>
                     <td> <%= bowler.runs_given %> </td>
                     <td> <%= bowler.wickets %> </td>

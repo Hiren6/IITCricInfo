@@ -4,6 +4,9 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser')
 const matchesRoutes = require('./routes/matchesRoutes')
 const venuesRoutes = require('./routes/venuesRoutes')
+const playerRoutes = require('./routes/playerRoutes')
+const pointstableRoutes = require('./routes/pointstableRoutes')
+const createRoutes = require('./routes/createRoutes')
 
 const port = 8080;
 
@@ -36,3 +39,12 @@ app.use(matchesRoutes)
 
 //venues routes
 app.use(venuesRoutes)
+
+//player routes
+app.use(playerRoutes)
+
+//pointstable routes
+app.use(pointstableRoutes)
+
+//create routes
+app.use(createRoutes)

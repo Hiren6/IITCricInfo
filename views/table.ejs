@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab-4 Homepage</title>
+    <link rel="stylesheet" href="/assets/css/home.css" type="text/css">
+</head>
+<body>
+    <h1>Welcome to IITCricInfo</h1>
+    <table id="mt" cellspacing="0" width="100%">
+    <% pointstable.forEach(team => { %>
+            <tr>
+                <td> <%= team.team_name %> </td>
+                <td> <%= team.mat %> </td>
+                <td> <%= team.won %> </td>
+                <td> <%= team.loss %> </td>
+                <td> <%= team.tied %> </td>  
+                <td> <%= team.nrr %> </td>  
+                <td> <%= team.pts%> </td>  
+            </tr>
+        <% }) %> 
+    </table>
+</body>
+</html>
