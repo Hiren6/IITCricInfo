@@ -10,7 +10,6 @@ router.post('/create', function(req, res, next) {
     const q = `select * from venue`; 
     try {
         const table = client.query(q);
-        console.table(table.rows)
     
         var sql = 'INSERT INTO users SET ?';
         client.query(sql, venueDetails,function (err, data) { 

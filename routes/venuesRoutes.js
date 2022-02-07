@@ -56,8 +56,7 @@ router.get('/venues/:v_id', async (req, res) => {
         where innings_no = 1 
         group by match_id, innings_no 
         order by match_id
-    )
-        
+    )   
     select max(total_runs) as highest_chased
     from goo
     join match on match.match_id = goo.match_id
@@ -87,10 +86,12 @@ router.get('/venues/:v_id', async (req, res) => {
         const highest_chased = await client.query(q2, [v_id]);
         const first_bat_won = await client.query(qb1, [v_id]);
         const second_bat_won = await client.query(qb2, [v_id]);
-        console.table(first_bat_won.rows)
-        console.table(second_bat_won.rows)
 
-        res.render('get_venue', {info: info.rows, runs: runs.rows, highest_chased: highest_chased.rows});
+        res.render('get_venue', {
+            info: info.rows, 
+            runs: runs.rows, 
+            highest_chased: highest_chased.rows
+        });
     }
     catch (e) { console.error(e.message); }
 });

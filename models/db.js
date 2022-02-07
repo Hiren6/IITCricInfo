@@ -10,9 +10,9 @@ const client = new Client({     // connnection with database
     database: process.env.database
 });
 
-function start_client() {
+async function start_client() {
     try {
-        const c = client.connect();
+        await client.connect();
         console.log("Connected to database successfully");
     }
     catch (e) { console.error(e.message); }

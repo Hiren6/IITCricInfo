@@ -7,7 +7,7 @@ router.get('/players/:p_id', async (req, res) => {
     const player_basic_skills = `select player_name,country_name,batting_hand,bowling_skill
     from player
     where player_id=$1`;
-
+    
     const no_of_fours = `select count(*)
     from ball_by_ball
     where ball_by_ball.striker=$1 and ball_by_ball.runs_scored=4`;
@@ -94,7 +94,6 @@ router.get('/players/:p_id', async (req, res) => {
         const five_wick = await client.query(tot_five_wick,[p_id]);
         const bowl = await client.query(bowl_vs_match,[p_id]);
 
-        console.table(bowl.rows);
 
         res.render('player', {
             player_info : player_info.rows[0],

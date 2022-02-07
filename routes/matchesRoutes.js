@@ -63,26 +63,100 @@ router.get('/matches/:m_id', async (req, res) => {
     join team tt2 on foo.t2=tt2.team_id`;
 
     const q_info = [//match info:-team1 and 2 name & id,toss_winner,match_id,year,venue name,match winner
-        `select tt1.team_id as id1, tt1.team_name as team1,tt2.team_id as id2, tt2.team_name as team2,tt3.team_name as toss, match_id, season_year, venue_name, tt4.team_name as winner 
-        from match
-        join team tt1 on match.team1 = tt1.team_id
-        join team tt2 on match.team2 = tt2.team_id
-        join team tt3 on match.toss_winner=tt3.team_id
-        join team tt4 on match.match_winner=tt4.team_id
-        join venue on match.venue_id=venue.venue_id
-        where match.match_id = $1
-        `,
-        //umpires
-        `select match_id,umpire_name,role_desc 
-        from umpire_match join umpire on umpire.umpire_id=umpire_match.umpire_id
-        where match_id=$1
-        `,
-        //playing XI
-        `select team_id, player.player_name, player_match.role_desc 
-        from player_match join player
-        on player_match.player_id=player.player_id 
-        where match_id=$1`
+    `select tt1.team_id as id1, tt1.team_name as team1,tt2.team_id as id2, tt2.team_name as team2,tt3.team_name as toss, match_id, season_year, venue_name, tt4.team_name as winner 
+    from match
+    join team tt1 on match.team1 = tt1.team_id
+    join team tt2 on match.team2 = tt2.team_id
+    join team tt3 on match.toss_winner=tt3.team_id
+    join team tt4 on match.match_winner=tt4.team_id
+    join venue on match.venue_id=venue.venue_id
+    where match.match_id = $1
+    `,
+    //umpires
+    `select match_id,umpire_name,role_desc 
+    from umpire_match join umpire on umpire.umpire_id=umpire_match.umpire_id
+    where match_id=$1
+    `,
+    //playing XI
+    `select team_id, player.player_name, player_match.role_desc 
+    from player_match join player
+    on player_match.player_id=player.player_id 
+    where match_id=$1`
     ];
+
+    const q_first_innings_runs = `
+    select match_id, innings_no, over_id, sum(runs_scored + extra_runs) as rpo
+    from ball_by_ball
+    where match_id = $1 and innings_no = 1
+    group by match_id, innings_no, over_id
+    order by match_id, innings_no, over_id
+    `;
+
+    const q_second_innings_runs = `
+    select match_id, innings_no, over_id, sum(runs_scored + extra_runs) as rpo
+    from ball_by_ball
+    where match_id = $1 and innings_no = 2
+    group by match_id, innings_no, over_id
+    order by match_id, innings_no, over_id
+    `;
+
+    const qd = [
+        `select count(ball_id) as num_ones 
+        from ball_by_ball
+        where match_id = $1 and runs_scored = 1
+        group by match_id, innings_no`,
+
+        `select count(ball_id) as num_twos 
+        from ball_by_ball
+        where match_id = $1 and runs_scored = 2
+        group by match_id, innings_no`,
+
+        `select count(ball_id) as num_threes 
+        from ball_by_ball
+        where match_id = $1 and runs_scored = 3
+        group by match_id, innings_no`,
+
+        `select count(ball_id) as num_fours 
+        from ball_by_ball
+        where match_id = $1 and runs_scored = 4
+        group by match_id, innings_no`,
+
+        `select count(ball_id) as num_ones 
+        from ball_by_ball
+        where match_id = $1 and runs_scored = 6
+        group by match_id, innings_no`
+    ];
+
+    const qr = `select team.team_name as winner, match.win_margin, match.win_type
+    from match
+    join team on match.match_winner = team.team_id
+    where match.match_id = $1`;
+
+    const q2 = `select 
+    sum(case when (runs_scored=1) then 1 else 0 end) as ones,
+    sum(case when (runs_scored=2) then 2 else 0 end) as twos,
+    sum(case when (runs_scored=3) then 3 else 0 end) as threes,
+    sum(case when (runs_scored=4) then 4 else 0 end) as fours,
+    sum(case when (runs_scored=6) then 6 else 0 end) as sixes,
+    sum(extra_runs) as extras
+    from ball_by_ball
+    where match_id = $1 
+    group by innings_no`;
+
+    const q3 = [
+    `select innings_no, over_id, sum(case when(out_type not in ('NULL')) then 1 else 0 end) as wickets_perover
+    from ball_by_ball
+    where match_id = $1 and innings_no=1
+    group by match_id, innings_no, over_id
+    order by innings_no, over_id
+    `,
+    `select innings_no, over_id, sum(case when(out_type not in ('NULL')) then 1 else 0 end) as wickets_perover
+    from ball_by_ball
+    where match_id = $1 and innings_no=2
+    group by match_id, innings_no, over_id
+    order by innings_no, over_id
+    `
+    ]
     
     try {
         const batting = await client.query(q_bat, [m_id]);
@@ -93,7 +167,39 @@ router.get('/matches/:m_id', async (req, res) => {
         const info = await client.query(q_info[0], [m_id]);
         const umpires = await client.query(q_info[1], [m_id]);
         const playingXI = await client.query(q_info[2], [m_id]);
-        res.render('get_match', {batting: batting.rows, extras: extras.rows, total: total.rows, bowling: bowling.rows, teams: teams.rows, info: info.rows, umpires: umpires.rows, playingXI: playingXI.rows});
+        const first_innings_runs = await client.query(q_first_innings_runs, [m_id]);
+        const second_innings_runs = await client.query(q_second_innings_runs, [m_id]);
+        const num_ones = await client.query(qd[0], [m_id]);
+        const num_twos = await client.query(qd[1], [m_id]);
+        const num_threes = await client.query(qd[2], [m_id]);
+        const num_fours = await client.query(qd[3], [m_id]);
+        const num_sixes = await client.query(qd[4], [m_id]);
+        const result = await client.query(qr, [m_id]);
+        const pies = await client.query(q2, [m_id]);
+        const wickets1 = await client.query(q3[0], [m_id]);
+        const wickets2 = await client.query(q3[1], [m_id]);
+
+        res.render('get_match', {
+            batting: batting.rows, 
+            extras: extras.rows, 
+            total: total.rows, 
+            bowling: bowling.rows, 
+            teams: teams.rows, 
+            info: info.rows, 
+            umpires: umpires.rows, 
+            playingXI: playingXI.rows,
+            first_innings_runs: first_innings_runs.rows,
+            second_innings_runs: second_innings_runs.rows,
+            num_ones : num_ones.rows,
+            num_twos : num_twos.rows,
+            num_threes : num_threes.rows,
+            num_fours : num_fours.rows,
+            num_sixes : num_sixes.rows,
+            result : result.rows,
+            pies : pies.rows,
+            wickets1 : wickets1.rows,
+            wickets2 : wickets2.rows
+        });
     }
     catch (e) { console.error(e.message); }
 });

@@ -28,7 +28,6 @@ router.get('/pointstable/:yr', async (req, res) => {
 
     try {
         const table = await client.query(hb,[yr]);
-        console.table(table.rows)
 
         res.render('table', {
             pointstable : table.rows
