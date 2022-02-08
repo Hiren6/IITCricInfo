@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/assets/css/navbar.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css/get_match.css" type="text/css">
+    <title>Match</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+</head>
+<body>
+    <%- include('./navbar.ejs') %>
+    <canvas id="piechart" style="width:100%;max-width:700px"></canvas>
+    <canvas id="piechart2" style="width:100%;max-width:700px"></canvas>
+    <script>
+        var team1_name = "<%= teams[0].firstteam %>";
+        var team2_name = "<%= teams[0].secondteam %>";
+
+        var total = <%= pies[0].total_runs %>;
+        var ones = <%= pies[0].ones %>;
+        var twos = <%= pies[0].twos %>;
+        var threes = <%= pies[0].threes %>;
+        var fours = <%= pies[0].fours %>;  
+        var sixes = <%= pies[0].sixes %>;
+        var extras = <%= pies[0].extras %> 
+        var arr = [ones, twos, threes, fours, sixes, extras];
+        for(var i=0; i<6; i++)
+            arr[i] = ((arr[i]*1.0)/total)*100.0;
+        
+        var xValues = ["Ones", "Twos", "Threes", "Fours", "Sixes", "Extras"];
+        var barColors = ["yellow", "red","black","skyblue","green","pink"];
+        
+        new Chart("piechart", {
+            type: "pie",
+            data: {
+                labels: xValues,
+                datasets: [{
+                backgroundColor: barColors,
+                data: arr
+                }]
+            },
+            options: {
+                title: {
+                display: true,
+                text: team1_name + " Runs Percentage"
+                }
+            }
+        });
+
+        total = <%= pies[1].total_runs %>;
+        ones = <%= pies[1].ones %>;
+        twos = <%= pies[1].twos %>;
+        threes = <%= pies[1].threes %>;
+        fours = <%= pies[1].fours %>;  
+        sixes = <%= pies[1].sixes %>;
+        extras = <%= pies[1].extras %> 
+        arr = [ones, twos, threes, fours, sixes, extras];
+        for(var i=0; i<6; i++)
+            arr[i] = ((arr[i]*1.0)/total)*100.0;
+
+        new Chart("piechart2", {
+            type: "pie",
+            data: {
+                labels: xValues,
+                datasets: [{
+                backgroundColor: barColors,
+                data: arr
+                }]
+            },
+            options: {
+                title: {
+                display: true,
+                text: team2_name + " Runs Percentage"
+                }
+            }
+        });
+    </script>
+</body>
+</html>

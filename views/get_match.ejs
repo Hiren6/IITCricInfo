@@ -4,49 +4,22 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="/assets/css/navbar.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css/get_match.css" type="text/css">
     <title>Match</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-    <style>
-        .t1 {
-            font-family: arial, sans-serif;
-            width: 100%;
-        }
-        .t1 td{
-            border: 1.50px solid #dddddd;
-            text-align: center;
-            padding: 8px;
-        }
-        .t1 th {
-            border: 1.50px solid #dddddd;
-            text-align: center;
-            padding: 8px;
-            background-color: lightgrey
-        }
-        .t2 {
-            font-family: arial, sans-serif;
-            width: 100%;
-        }
-        .t2 td{
-            border: 1.50px solid #dddddd;
-            text-align: center;
-            padding: 8px;
-        }
-        .t2 th {
-            border: 1.50px solid #dddddd;
-            text-align: center;
-            padding: 8px;
-            background-color: lightskyblue
-        }
-        #wh {
-            text-align: center;
-        }
-    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 </head>
 <body>
-    <%- include('./partials/navbar.ejs') %> 
-    <h2> First innings </h2>
-    <h3> Batting (<%= teams[0].firstteam %>) </h3>
+    <%- include('./partials/navbar') %> 
+    <br>
+    <a href="/matches/<%= match_id %>/score_comparision" class="btn btn-dark">Score comparision</a>
+    <a href="/matches/<%= match_id %>/runs_percentage" class="btn btn-dark">Runs percentage</a>
+    <br><br>
+    
+    <h2 class="i"> First innings </h2>
+    <h4> Batting (<%= teams[0].firstteam %>) </h4>
     <table class="t1" cellspacing="0" width="100%">
         <tr>
             <th> <b>Batter</b> </td>
@@ -71,7 +44,7 @@
     <div id="e"><b> Extras: <%= extras[0].extras %> </b></div> <br>
     <div id="t"><b> Total: <%= total[0].total_runs %>/<%= total[0].wickets %> </b></div> <br>
 
-    <h3> Bowling </h3>
+    <h4> Bowling </h4>
     <table class="t2" cellspacing="0" width="100%">
         <tr>
             <th> <b>Bowler</b> </td>
@@ -90,9 +63,9 @@
             <% } %> 
         <% }) %> 
     </table>
-
-    <h2> Second innings </h2>
-    <h3> Batting (<%= teams[0].secondteam %>) </h3>
+    <br>
+    <h2 class="i"> Second innings </h2>
+    <h4> Batting (<%= teams[0].secondteam %>) </h4>
     <table class="t1" cellspacing="0" width="100%">
         <tr>
             <th> <b>Batter</b> </td>
@@ -117,7 +90,7 @@
     <div id="e"> <b> Extras: <%= extras[1].extras %> </b> </div> <br>
     <div id="t"> <b> Total: <%= total[1].total_runs %>/<%= total[0].wickets %> </b> </div> <br>
 
-    <h3> Bowling </h3>
+    <h4> Bowling </h4>
     <table class="t2" cellspacing="0" width="100%">
         <tr>
             <th> <b>Bowler</b> </td>
@@ -136,7 +109,8 @@
             <% } %> 
         <% }) %> 
     </table>
-
+    
+    <br>
     <h2> Match Info </h2>
     <p>
         <b>Match</b> : <%= info[0].match_id %>, <%= info[0].team1 %> vs <%= info[0].team2 %>, <%= info[0].season_year %> <br>
@@ -181,142 +155,6 @@
                                                 <% } %> 
                                             <% } %> 
                                         <% }) %>
-    </p>
-
-    <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
-    <script>
-        var overs = [];
-        for(var i=0; i<=20; i++)
-            overs.push(i);
-
-        var team1_runs = [0];
-        <% first_innings_runs.forEach(over => { %>
-            team1_runs.push(<%= over.rpo %>)
-        <% }) %>
-
-        for(var j=1; j<team1_runs.length; j++)
-            team1_runs[j] += team1_runs[j-1];
-
-        var team2_runs = [0];
-        <% second_innings_runs.forEach(over => { %>
-            team2_runs.push(<%= over.rpo %>)
-        <% }) %>
-
-        for(var j=1; j<team2_runs.length; j++)
-            team2_runs[j] += team2_runs[j-1];
-
-        var team1_name = "<%= teams[0].firstteam %>";
-        var team2_name = "<%= teams[0].secondteam %>";
-        
-        new Chart("myChart", {  
-            type: "line",
-            data: {
-                labels: overs,
-                datasets: [{
-                label : team1_name,
-                data: team1_runs,
-                borderColor: "red",
-                fill: false
-                },{
-                label : team2_name,
-                data: team2_runs,
-                borderColor: "blue",
-                fill: false
-                }]
-            },
-            options: {
-                legend: {display: true},
-                responsive: true,
-                scales: {
-                    xAxes: [ {
-                    display: true,
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Overs'
-                    },
-                    ticks: {
-                        major: {
-                        fontStyle: 'bold',
-                        fontColor: '#FF0000'
-                        }
-                    }
-                    } ],
-                    yAxes: [ {
-                    display: true,
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Runs'
-                    }
-                    } ]
-                }
-            }
-        });
-
-    </script>
-    <h3 id="wh"><b> <%= result[0].winner %> won by <%= result[0].win_margin %> <%= result[0].win_type %> </b></h3>  
-    
-    <canvas id="piechart" style="width:100%;max-width:700px"></canvas>
-    <canvas id="piechart2" style="width:100%;max-width:700px"></canvas>
-
-    <script>
-        var total = <%= total[0].total_runs %>;
-        var ones = <%= pies[0].ones %>;
-        var twos = <%= pies[0].twos %>;
-        var threes = <%= pies[0].threes %>;
-        var fours = <%= pies[0].fours %>;  
-        var sixes = <%= pies[0].sixes %>;
-        var extras = <%= pies[0].extras %> 
-        var arr = [ones, twos, threes, fours, sixes, extras];
-        for(var i=0; i<6; i++)
-            arr[i] = ((arr[i]*1.0)/total)*100.0;
-        
-        var xValues = ["Ones", "Twos", "Threes", "Fours", "Sixes", "Extras"];
-        var barColors = ["yellow", "red","black","skyblue","green","pink"];
-        
-        new Chart("piechart", {
-            type: "pie",
-            data: {
-                labels: xValues,
-                datasets: [{
-                backgroundColor: barColors,
-                data: arr
-                }]
-            },
-            options: {
-                title: {
-                display: true,
-                text: team1_name + " Runs Percentage"
-                }
-            }
-        });
-
-        total = <%= total[1].total_runs %>;
-        ones = <%= pies[1].ones %>;
-        twos = <%= pies[1].twos %>;
-        threes = <%= pies[1].threes %>;
-        fours = <%= pies[1].fours %>;  
-        sixes = <%= pies[1].sixes %>;
-        extras = <%= pies[1].extras %> 
-        arr = [ones, twos, threes, fours, sixes, extras];
-        for(var i=0; i<6; i++)
-            arr[i] = ((arr[i]*1.0)/total)*100.0;
-
-        new Chart("piechart2", {
-            type: "pie",
-            data: {
-                labels: xValues,
-                datasets: [{
-                backgroundColor: barColors,
-                data: arr
-                }]
-            },
-            options: {
-                title: {
-                display: true,
-                text: team2_name + " Runs Percentage"
-                }
-            }
-        });
-    </script>    
+    </p>      
 </body>
 </html>

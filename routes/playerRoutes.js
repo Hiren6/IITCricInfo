@@ -38,7 +38,7 @@ router.get('/players/:p_id', async (req, res) => {
 
     const total_wickets = `select count(*)
     from ball_by_ball
-    where ball_by_ball.striker=$1 and ball_by_ball.out_type IS NOT NULL`;
+    where ball_by_ball.striker=$1 and ball_by_ball.out_type not in('NULL')`;
 
     const total_balls_played =`select count(*)
     from ball_by_ball
@@ -57,7 +57,7 @@ router.get('/players/:p_id', async (req, res) => {
 
     const tot_wickets_bowl = `select count(*)
     from ball_by_ball
-    where ball_by_ball.bowler=$1 and ball_by_ball.out_type IS NOT NULL`;
+    where ball_by_ball.bowler=$1 and ball_by_ball.out_type not in('NULL')`;
 
     const tot_runs_bowled = `select sum(runs_scored)
     from ball_by_ball
@@ -70,7 +70,7 @@ router.get('/players/:p_id', async (req, res) => {
 
     const tot_five_wick = `select count(out_type),match_id
     from ball_by_ball
-    where bowler=$1 and out_type IS NOT NULL
+    where bowler=$1 and out_type not in('NULL')
     group by match_id
     having count(out_type) >= 5`;
 

@@ -1,0 +1,42 @@
+.t1 {
+    font-family: arial, sans-serif;
+    width: 100%;
+}
+.t1 td{
+    border: 1.50px solid #dddddd;
+    text-align: center;
+    padding: 8px;
+}
+.t1 th {
+    border: 1.50px solid #dddddd;
+    text-align: center;
+    padding: 8px;
+    background-color: lightgrey
+}
+.t2 {
+    font-family: arial, sans-serif;
+    width: 100%;
+}
+.t2 td{
+    border: 1.50px solid #dddddd;
+    text-align: center;
+    padding: 8px;
+}
+.t2 th {
+    border: 1.50px solid #dddddd;
+    text-align: center;
+    padding: 8px;
+    background-color: lightskyblue
+}
+#wh {
+    text-align: center;
+}
+.i {
+    text-align: center;
+}
+#e {
+    text-align: center;
+}
+#t {
+    text-align: center;
+}

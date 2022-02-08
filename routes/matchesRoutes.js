@@ -20,6 +20,7 @@ router.get('/matches', async (req, res) => {
 
 router.get('/matches/:m_id', async (req, res) => {
     const {m_id} = req.params;
+    
     //batting
     const q_bat = `select bb.innings_no, player.player_id, player.player_name, sum(runs_scored) as runs , sum(case when (runs_scored=4) then 1 else 0 end) as fours, sum(case when (runs_scored=6) then 1 else 0 end) as sixes, count(ball_id) as balls_faced
 	from ball_by_ball bb
@@ -83,6 +84,42 @@ router.get('/matches/:m_id', async (req, res) => {
     on player_match.player_id=player.player_id 
     where match_id=$1`
     ];
+    
+    try {
+        const batting = await client.query(q_bat, [m_id]);
+        const bowling = await client.query(q_bowl, [m_id]);
+        const extras = await client.query(q_extras, [m_id]);
+        const total = await client.query(q_total, [m_id]);
+        const teams = await client.query(q_teams, [m_id]);
+        const info = await client.query(q_info[0], [m_id]);
+        const umpires = await client.query(q_info[1], [m_id]);
+        const playingXI = await client.query(q_info[2], [m_id]);
+        
+
+        res.render('get_match', {
+            match_id : m_id,
+            batting: batting.rows, 
+            extras: extras.rows, 
+            total: total.rows, 
+            bowling: bowling.rows, 
+            teams: teams.rows, 
+            info: info.rows, 
+            umpires: umpires.rows, 
+            playingXI: playingXI.rows
+        });
+    }
+    catch (e) { console.error(e.message); }
+});
+
+router.get('/matches/:m_id/score_comparision', async (req, res) => {
+    const {m_id} = req.params;
+    //team names by innings
+    const q_teams = `select tt1.team_name as firstTeam,tt2.team_name as secondTeam from
+    (select team1 as t1,team2 as t2 from match where match.match_id = $1 and ((toss_winner=team1 and toss_name='bat') or (toss_winner=team2 and toss_name='field'))
+    union
+    select team2 as t1,team1 as t2 from match where match.match_id = $1 and ((toss_winner=team2 and toss_name='bat') or (toss_winner=team1 and toss_name='field')))foo
+    join team tt1 on foo.t1=tt1.team_id
+    join team tt2 on foo.t2=tt2.team_id`;
 
     const q_first_innings_runs = `
     select match_id, innings_no, over_id, sum(runs_scored + extra_runs) as rpo
@@ -100,37 +137,37 @@ router.get('/matches/:m_id', async (req, res) => {
     order by match_id, innings_no, over_id
     `;
 
-    const qd = [
-        `select count(ball_id) as num_ones 
-        from ball_by_ball
-        where match_id = $1 and runs_scored = 1
-        group by match_id, innings_no`,
-
-        `select count(ball_id) as num_twos 
-        from ball_by_ball
-        where match_id = $1 and runs_scored = 2
-        group by match_id, innings_no`,
-
-        `select count(ball_id) as num_threes 
-        from ball_by_ball
-        where match_id = $1 and runs_scored = 3
-        group by match_id, innings_no`,
-
-        `select count(ball_id) as num_fours 
-        from ball_by_ball
-        where match_id = $1 and runs_scored = 4
-        group by match_id, innings_no`,
-
-        `select count(ball_id) as num_ones 
-        from ball_by_ball
-        where match_id = $1 and runs_scored = 6
-        group by match_id, innings_no`
-    ];
-
     const qr = `select team.team_name as winner, match.win_margin, match.win_type
     from match
     join team on match.match_winner = team.team_id
     where match.match_id = $1`;
+
+    try {
+        const teams = await client.query(q_teams, [m_id]);
+        const first_innings_runs = await client.query(q_first_innings_runs, [m_id]);
+        const second_innings_runs = await client.query(q_second_innings_runs, [m_id]);
+        const result = await client.query(qr, [m_id]);
+
+        res.render('partials/score_comparision', {
+            teams: teams.rows,
+            first_innings_runs: first_innings_runs.rows,
+            second_innings_runs: second_innings_runs.rows,
+            result : result.rows,
+        })
+    }
+
+    catch (e) { console.error(e.message); }
+});
+
+router.get('/matches/:m_id/runs_percentage', async (req, res) => {
+    const {m_id} = req.params;
+
+    const q_teams = `select tt1.team_name as firstTeam,tt2.team_name as secondTeam from
+    (select team1 as t1,team2 as t2 from match where match.match_id = $1 and ((toss_winner=team1 and toss_name='bat') or (toss_winner=team2 and toss_name='field'))
+    union
+    select team2 as t1,team1 as t2 from match where match.match_id = $1 and ((toss_winner=team2 and toss_name='bat') or (toss_winner=team1 and toss_name='field')))foo
+    join team tt1 on foo.t1=tt1.team_id
+    join team tt2 on foo.t2=tt2.team_id`;
 
     const q2 = `select 
     sum(case when (runs_scored=1) then 1 else 0 end) as ones,
@@ -138,7 +175,8 @@ router.get('/matches/:m_id', async (req, res) => {
     sum(case when (runs_scored=3) then 3 else 0 end) as threes,
     sum(case when (runs_scored=4) then 4 else 0 end) as fours,
     sum(case when (runs_scored=6) then 6 else 0 end) as sixes,
-    sum(extra_runs) as extras
+    sum(extra_runs) as extras,
+    sum(runs_scored + extra_runs) as total_runs
     from ball_by_ball
     where match_id = $1 
     group by innings_no`;
@@ -157,50 +195,20 @@ router.get('/matches/:m_id', async (req, res) => {
     order by innings_no, over_id
     `
     ]
-    
     try {
-        const batting = await client.query(q_bat, [m_id]);
-        const bowling = await client.query(q_bowl, [m_id]);
-        const extras = await client.query(q_extras, [m_id]);
-        const total = await client.query(q_total, [m_id]);
         const teams = await client.query(q_teams, [m_id]);
-        const info = await client.query(q_info[0], [m_id]);
-        const umpires = await client.query(q_info[1], [m_id]);
-        const playingXI = await client.query(q_info[2], [m_id]);
-        const first_innings_runs = await client.query(q_first_innings_runs, [m_id]);
-        const second_innings_runs = await client.query(q_second_innings_runs, [m_id]);
-        const num_ones = await client.query(qd[0], [m_id]);
-        const num_twos = await client.query(qd[1], [m_id]);
-        const num_threes = await client.query(qd[2], [m_id]);
-        const num_fours = await client.query(qd[3], [m_id]);
-        const num_sixes = await client.query(qd[4], [m_id]);
-        const result = await client.query(qr, [m_id]);
         const pies = await client.query(q2, [m_id]);
         const wickets1 = await client.query(q3[0], [m_id]);
         const wickets2 = await client.query(q3[1], [m_id]);
 
-        res.render('get_match', {
-            batting: batting.rows, 
-            extras: extras.rows, 
-            total: total.rows, 
-            bowling: bowling.rows, 
-            teams: teams.rows, 
-            info: info.rows, 
-            umpires: umpires.rows, 
-            playingXI: playingXI.rows,
-            first_innings_runs: first_innings_runs.rows,
-            second_innings_runs: second_innings_runs.rows,
-            num_ones : num_ones.rows,
-            num_twos : num_twos.rows,
-            num_threes : num_threes.rows,
-            num_fours : num_fours.rows,
-            num_sixes : num_sixes.rows,
-            result : result.rows,
+        res.render('partials/runs_percentage', {
+            teams : teams.rows,
             pies : pies.rows,
             wickets1 : wickets1.rows,
             wickets2 : wickets2.rows
-        });
+        })
     }
+
     catch (e) { console.error(e.message); }
 });
 

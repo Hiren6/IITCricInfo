@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/assets/css/navbar.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css/get_match.css" type="text/css">
+    <title>Match</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+</head>
+<body>
+    <%- include('./navbar.ejs') %>
+    <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+    <script>
+            var overs = [];
+            for(var i=0; i<=20; i++)
+                overs.push(i);
+
+            var team1_runs = [0];
+            <% first_innings_runs.forEach(over => { %>
+                team1_runs.push(<%= over.rpo %>)
+            <% }) %>
+
+            for(var j=1; j<team1_runs.length; j++)
+                team1_runs[j] += team1_runs[j-1];
+
+            var team2_runs = [0];
+            <% second_innings_runs.forEach(over => { %>
+                team2_runs.push(<%= over.rpo %>)
+            <% }) %>
+
+            for(var j=1; j<team2_runs.length; j++)
+                team2_runs[j] += team2_runs[j-1];
+
+            var team1_name = "<%= teams[0].firstteam %>";
+            var team2_name = "<%= teams[0].secondteam %>";
+            
+            new Chart("myChart", {  
+                type: "line",
+                data: {
+                    labels: overs,
+                    datasets: [{
+                    label : team1_name,
+                    data: team1_runs,
+                    borderColor: "red",
+                    fill: false
+                    },{
+                    label : team2_name,
+                    data: team2_runs,
+                    borderColor: "blue",
+                    fill: false
+                    }]
+                },
+                options: {
+                    legend: {display: true},
+                    responsive: true,
+                    scales: {
+                        xAxes: [ {
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Overs'
+                        },
+                        ticks: {
+                            major: {
+                            fontStyle: 'bold',
+                            fontColor: '#FF0000'
+                            }
+                        }
+                        } ],
+                        yAxes: [ {
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Runs'
+                        }
+                        } ]
+                    }
+                }
+            });
+    </script>
+    <h3 id="wh"><b> <%= result[0].winner %> won by <%= result[0].win_margin %> <%= result[0].win_type %> </b></h3>
+</body>
+</html>
