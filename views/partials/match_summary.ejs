@@ -5,10 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/assets/css/navbar.css" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <title>Match summary</title>
     <style>
-        .cb-col {
-            display: inline-block; 
+        .cb-col { 
             /* d-inline-block */
             box-sizing: border-box;
             float: left;
@@ -25,6 +25,8 @@
 
 <body>
     <%- include('./navbar.ejs') %>
+    <br>
+    <div id="match-summary" class="container p-0 bg-white float-left ">
     <div class="cb-col w-100 pb-2">
         <div class="cb-col w-100 scrb-hdr-rw  fs-2 text-center fw-bold">
             MATCH SUMMARY
@@ -98,7 +100,7 @@
                                                 </div>
                                                 <div class="cb-col  " style="width: 50%;">
                                                     <!-- name,wicket-runs overs -->
-                                                    <% if(i==1 ){ %>
+                                                    <% if(i==1){ %>
                                                         <% if(b>j){ %>
                                                             <div class="cb-col  " style="width: 80%;">
                                                                 <a href="/players/<%=bowler[j].id %>">
@@ -114,16 +116,16 @@
                                                             <% }}else{ %>
                                                                 <% if(j< bowler.length-b ) { %>
                                                                     <div class="cb-col  " style="width: 80%;">
-                                                                        <a href="/players/<%=bowler[j].id %>">
-                                                                            <%= bowler[j].name %>
+                                                                        <a href="/players/<%=bowler[b+j].id %>">
+                                                                            <%= bowler[b+j].name %>
                                                                         </a>
                                                                     </div>
                                                                     <div class="cb-col text-end" style="width: 10%;">
-                                                                        <%= bowler[j].wickets %> - <%=
-                                                                                bowler[j].runs_given %>
+                                                                        <%= bowler[b+j].wickets %> - <%=
+                                                                                bowler[b+j].runs_given %>
                                                                     </div>
                                                                     <div class="cb-col text-end" style="width: 10%;">
-                                                                        <%= Math.ceil(bowler[j].balls_bowled / 6) %>
+                                                                        <%= Math.ceil(bowler[b+j].balls_bowled / 6) %>
                                                                     </div>
                                                                     <% }} %>
                                                 </div>
@@ -133,10 +135,10 @@
                                                     <div class="cb-col w-100 scrb-hdr-rw pt-2 text-black text-center fw-bold fs-4 fst-italic"
                                                         style="background-color: aquamarine;">
                                                         <h2>
-                                                            <%= info[0].winner %> won by <%= info[0].win_margin %>
-                                                                    <%=info[0].win_type %>
+                                                            <%= info[0].winner %> won by <%= info[0].win_margin %> <%=info[0].win_type %>
                                                         </h2>
                                                     </div>
+    </div>
     </div>
 </body>
 </html>

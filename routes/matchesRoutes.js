@@ -28,7 +28,7 @@ router.get('/matches/:m_id', async (req, res) => {
 	join player on bb.striker = player.player_id
     where bb.match_id = $1
 	group by bb.match_id, bb.innings_no, player.player_name, player.player_id
-	order by bb.match_id, bb.innings_no `;
+	order by bb.match_id, bb.innings_no, runs desc `;
 
     //extras
     const q_extras = `select bb.innings_no, sum(extra_runs) as extras
@@ -216,7 +216,7 @@ router.get('/matches/:m_id/match_summary', async (req, res) => {
     const {m_id} = req.params;
 
     const q_info = //match info:-team1 and 2 name & id,toss_winner,match_id,year,venue name,match winner
-    `select tt1.team_id as id1, tt1.team_name as team1,tt2.team_id as id2, tt2.team_name as team2,tt3.team_name as toss, match_id, season_year, venue_name, tt4.team_name as winner 
+    `select tt1.team_id as id1, tt1.team_name as team1,tt2.team_id as id2, tt2.team_name as team2,tt3.team_name as toss, match_id, season_year, venue_name, tt4.team_name as winner, match.win_type, match.win_margin
     from match
     join team tt1 on match.team1 = tt1.team_id
     join team tt2 on match.team2 = tt2.team_id
@@ -232,7 +232,7 @@ router.get('/matches/:m_id/match_summary', async (req, res) => {
 	join player on bb.striker = player.player_id
     where bb.match_id = $1
 	group by bb.match_id, bb.innings_no, player.player_name, player.player_id
-	order by bb.match_id, bb.innings_no `;
+	order by bb.match_id, bb.innings_no, runs desc `;
 
     //bowling
     const q_bowl = `select bb.innings_no, player.player_id as id, player.player_name as name, count(ball_id) as balls_bowled, sum(runs_scored) as runs_given, sum(case when (out_type not in('NULL')) then 1 else 0 end) as wickets
