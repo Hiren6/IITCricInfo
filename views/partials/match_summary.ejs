@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/assets/css/navbar.css" type="text/css">
+    <title>Match summary</title>
+    <style>
+        .cb-col {
+            display: inline-block; 
+            /* d-inline-block */
+            box-sizing: border-box;
+            float: left;
+            /* float-box */
+            min-height: 1px;
+        }
+        .scrb-hdr-rw {
+            background: #4a4a4a;
+            color: #fff;
+            padding: 8px 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <%- include('./navbar.ejs') %>
+    <div class="cb-col w-100 pb-2">
+        <div class="cb-col w-100 scrb-hdr-rw  fs-2 text-center fw-bold">
+            MATCH SUMMARY
+        </div>
+
+        <div class="cb-col w-100 scrb-hdr-rw pt-2 text-black text-center fw-bold fs-4"
+            style="background-color: aquamarine;">
+            <%= info[0].match_id %> , IPL <%= info[0].season_year %>
+        </div>
+        <!-- no of 1st inning batsmen==a; no of bowlers==b -->
+        <% let a=0,b=0; %>
+            <% for(let i=0;i< bat.length;i++ ){ %>
+                <% if(bat[i].innings_no==2) break; %>
+                    <% a+=1;} %>
+                        <% for(let i=0;i< bowler.length ;i++ ){ %>
+                            <% if(bowler[i].innings_no==2) break; %>
+                                <% b+=1;} %>
+
+                                    <!-- for 2 innings   -->
+                                    <% for(let i=1;i<3;i++){%>
+                                        <!-- team name,overs and scores -->
+                                        <div class="cb-col w-100 p-2 pe-3 fs-5 bg-secondary bg-opacity-25">
+                                            <div class="cb-col text-bold" style="width: 80%;">
+                                                <% if(i==1){ %>
+                                                    <%= inn[0].first %>
+                                                        <% }else { %>
+                                                            <%= inn[0].second %>
+                                                                <% } %>
+                                            </div>
+
+                                            <div class="cb-col text-end text-bold" style="width: 10%;">
+                                                <%= Math.ceil(total[i-1].balls/6 ) %>
+                                            </div>
+                                            <div class="cb-col  text-end" style="width: 10%;">
+                                                <%= total[i-1].total_runs %> - <%= total[i-1].wickets %>
+                                            </div>
+                                        </div>
+                                        <!-- max 3 rows -->
+                                        <% for(let j=0;j<3;j++){ %>
+                                            <div class="cb-col w-100 border-bottom py-1 pe-3 ps-2">
+                                                <!-- divide batsman and bowlers -->
+                                                <div class="cb-col pe-2 border-end border-dark" style="width: 50%;">
+                                                    <!-- name,run,ball -->
+                                                    <% if(i==1 ){ %>
+                                                        <% if(a>j){ %>
+                                                            <div class="cb-col  " style="width: 80%;">
+                                                                <a href="/players/<%=bat[j].id %>">
+                                                                    <%= bat[j].name %>
+                                                                </a>
+                                                            </div>
+                                                            <div class="cb-col text-end" style="width: 10%;">
+                                                                <%= bat[j].runs %>
+                                                            </div>
+                                                            <div class="cb-col text-end" style="width: 10%;">
+                                                                <%= bat[j].balls_faced %>
+                                                            </div>
+                                                            <% }}else{ %>
+                                                                <% if(j< bat.length-a ) { %>
+                                                                    <div class="cb-col  " style="width: 80%;">
+                                                                        <a href=/players/<%=bat[a+j].id %>"><%=
+                                                                                bat[a+j].name %> </a>
+                                                                    </div>
+                                                                    <div class="cb-col text-end" style="width: 10%;">
+                                                                        <%= bat[a+j].runs %>
+                                                                    </div>
+                                                                    <div class="cb-col text-end" style="width: 10%;">
+                                                                        <%= bat[a+j].balls_faced %>
+                                                                    </div>
+                                                                    <% }} %>
+
+                                                </div>
+                                                <div class="cb-col  " style="width: 50%;">
+                                                    <!-- name,wicket-runs overs -->
+                                                    <% if(i==1 ){ %>
+                                                        <% if(b>j){ %>
+                                                            <div class="cb-col  " style="width: 80%;">
+                                                                <a href="/players/<%=bowler[j].id %>">
+                                                                    <%= bowler[j].name %>
+                                                                </a>
+                                                            </div>
+                                                            <div class="cb-col text-end" style="width: 10%;">
+                                                                <%= bowler[j].wickets %> - <%= bowler[j].runs_given %>
+                                                            </div>
+                                                            <div class="cb-col text-end" style="width: 10%;">
+                                                                <%= Math.ceil(bowler[j].balls_bowled / 6) %>
+                                                            </div>
+                                                            <% }}else{ %>
+                                                                <% if(j< bowler.length-b ) { %>
+                                                                    <div class="cb-col  " style="width: 80%;">
+                                                                        <a href="/players/<%=bowler[j].id %>">
+                                                                            <%= bowler[j].name %>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div class="cb-col text-end" style="width: 10%;">
+                                                                        <%= bowler[j].wickets %> - <%=
+                                                                                bowler[j].runs_given %>
+                                                                    </div>
+                                                                    <div class="cb-col text-end" style="width: 10%;">
+                                                                        <%= Math.ceil(bowler[j].balls_bowled / 6) %>
+                                                                    </div>
+                                                                    <% }} %>
+                                                </div>
+                                            </div>
+                                            <% }; %>
+                                                <% }; %>
+                                                    <div class="cb-col w-100 scrb-hdr-rw pt-2 text-black text-center fw-bold fs-4 fst-italic"
+                                                        style="background-color: aquamarine;">
+                                                        <h2>
+                                                            <%= info[0].winner %> won by <%= info[0].win_margin %>
+                                                                    <%=info[0].win_type %>
+                                                        </h2>
+                                                    </div>
+    </div>
+</body>
+</html>

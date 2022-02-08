@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/navbar.css" type="text/css">
     <link rel="stylesheet" href="/assets/css/get_match.css" type="text/css">
     <title>Match</title>
@@ -16,17 +17,19 @@
     <br>
     <a href="/matches/<%= match_id %>/score_comparision" class="btn btn-dark">Score comparision</a>
     <a href="/matches/<%= match_id %>/runs_percentage" class="btn btn-dark">Runs percentage</a>
+    <a href="/matches/<%= match_id %>/match_summary" class="btn btn-dark">Match Summary</a>
+    
     <br><br>
     
     <h2 class="i"> First innings </h2>
     <h4> Batting (<%= teams[0].firstteam %>) </h4>
     <table class="t1" cellspacing="0" width="100%">
         <tr>
-            <th> <b>Batter</b> </td>
-            <th> <b>Runs</b> </td>
-            <th> <b>Fours</b> </td>
-            <th> <b>Sixes</b> </td>
-            <th> <b>Balls faced</b> </td>
+            <th> <b>Batter</b> </th>
+            <th> <b>Runs</b> </th>
+            <th> <b>Fours</b> </th>
+            <th> <b>Sixes</b> </th>
+            <th> <b>Balls faced</b> </th>
         </tr>
         <% batting.forEach(batter => { %>
             <% if (batter.innings_no == 1) {%>
@@ -47,10 +50,10 @@
     <h4> Bowling </h4>
     <table class="t2" cellspacing="0" width="100%">
         <tr>
-            <th> <b>Bowler</b> </td>
-            <th> <b>Balls bowled</b> </td>
-            <th> <b>Runs_given</b> </td>
-            <th> <b>Wickets</b> </td>
+            <th> <b>Bowler</b> </th>
+            <th> <b>Balls bowled</b> </th>
+            <th> <b>Runs_given</b> </th>
+            <th> <b>Wickets</b> </th>
         </tr>
         <% bowling.forEach(bowler => { %>
             <% if (bowler.innings_no == 1) {%>
@@ -68,11 +71,11 @@
     <h4> Batting (<%= teams[0].secondteam %>) </h4>
     <table class="t1" cellspacing="0" width="100%">
         <tr>
-            <th> <b>Batter</b> </td>
-            <th> <b>Runs</b> </td>
-            <th> <b>Fours</b> </td>
-            <th> <b>Sixes</b> </td>
-            <th> <b>Balls faced</b> </td>
+            <th> <b>Batter</b> </th>
+            <th> <b>Runs</b> </th>
+            <th> <b>Fours</b> </th>
+            <th> <b>Sixes</b> </th>
+            <th> <b>Balls faced</b> </th>
         </tr>
         <% batting.forEach(batter => { %>
             <% if (batter.innings_no == 2) {%>
@@ -93,10 +96,10 @@
     <h4> Bowling </h4>
     <table class="t2" cellspacing="0" width="100%">
         <tr>
-            <th> <b>Bowler</b> </td>
-            <th> <b>Balls bowled</b> </td>
-            <th> <b>Runs_given</b> </td>
-            <th> <b>Wickets</b> </td>
+            <th> <b>Bowler</b> </th>
+            <th> <b>Balls bowled</b> </th>
+            <th> <b>Runs_given</b> </th>
+            <th> <b>Wickets</b> </th>
         </tr>
         <% bowling.forEach(bowler => { %>
             <% if (bowler.innings_no == 2) {%>

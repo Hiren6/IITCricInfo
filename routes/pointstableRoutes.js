@@ -30,7 +30,8 @@ router.get('/pointstable/:yr', async (req, res) => {
         const table = await client.query(hb,[yr]);
 
         res.render('table', {
-            pointstable : table.rows
+            pointstable : table.rows,
+            season_year : yr
         });
     }
     catch (e) { console.error(e.message); }

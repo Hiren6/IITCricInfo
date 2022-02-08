@@ -1,0 +1,13 @@
+.cb-col {
+    display: inline-block; 
+    /* d-inline-block */
+    box-sizing: border-box;
+    float: left;
+    /* float-box */
+    min-height: 1px;
+}
+.scrb-hdr-rw {
+    background: #4a4a4a;
+    color: #fff;
+    padding: 8px 10px;
+}

@@ -5,12 +5,31 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lab-4 Homepage</title>
-    <link rel="stylesheet" href="/assets/css/home.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css/get_match.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css/navbar.css" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100&display=swap" rel="stylesheet">
+    <style>
+        #heading {
+            font-family: 'Montserrat', sans-serif;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to IITCricInfo</h1>
-    <table id="mt" cellspacing="0" width="100%">
-    <% pointstable.forEach(team => { %>
+    <%- include('./partials/navbar') %>
+    <br>
+    <h1 id="heading">Points table <%= season_year %> </h1> 
+    <table class="t1" cellspacing="0" width="100%">
+        <tr>
+            <th> <b>Team Name</b> </th>
+            <th> <b>Mat</b> </th>
+            <th> <b>Won</b> </th>
+            <th> <b>Lost</b> </th>
+            <th> <b>Tied</b> </th>
+            <th> <b>NRR</b> </th>
+            <th> <b>Points</b> </th>
+        </tr>
+        <% pointstable.forEach(team => { %>
             <tr>
                 <td> <%= team.team_name %> </td>
                 <td> <%= team.mat %> </td>

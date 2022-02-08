@@ -31,14 +31,14 @@ router.get('/players/:p_id', async (req, res) => {
     group by match_id) as run`; 
 
     const no_of_fifties = `select match_id,sum(runs_scored)
-    from ball_by_ball
+    from ball_by_ball   
     where ball_by_ball.striker=$1 and ball_by_ball.extra_runs=0
     group by match_id
     having sum(runs_scored) >= 50`; 
 
     const total_wickets = `select count(*)
     from ball_by_ball
-    where ball_by_ball.striker=$1 and ball_by_ball.out_type not in('NULL')`;
+    where ball_by_ball.bowler=$1 and ball_by_ball.out_type not in('NULL')`;
 
     const total_balls_played =`select count(*)
     from ball_by_ball
